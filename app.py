@@ -1,6 +1,8 @@
 import streamlit as st
 import joblib
 from pathlib import Path
+from database import SessionLocal
+from models import Prediction
 
 # -------------------------------
 # Page Config
@@ -139,6 +141,29 @@ if st.button("🔍 Analyze Message", use_container_width=True):
         probability = model.predict_proba([message])[0]
 
         spam_confidence = probability[1] * 100
+
+        # -------------------------------
+        # Save prediction to database
+        # -------------------------------
+        db = SessionLocal()
+
+        try:
+            new_prediction = Prediction(
+                name=name.strip() if name.strip() else None,
+                message=message,
+                prediction="Spam" if prediction == 1 else "Ham",
+                probability=float(probability[1])
+            )
+
+            db.add(new_prediction)
+            db.commit()
+
+        except Exception as e:
+            db.rollback()
+            st.error(f"Database Error: {e}")
+
+        finally:
+            db.close()
 
         if prediction == 1:
             if name and name.strip():
