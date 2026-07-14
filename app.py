@@ -1,6 +1,6 @@
 import streamlit as st
 import joblib
-
+from pathlib import Path
 # -------------------------------
 # Page Config
 # -------------------------------
@@ -45,7 +45,12 @@ st.markdown("""
 # -------------------------------
 # Load Model
 # -------------------------------
-model = joblib.load("Model\\spam_classifier.pkl")
+
+
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = BASE_DIR / "Model" / "spam_classifier.pkl"
+
+model = joblib.load(MODEL_PATH)
 
 # -------------------------------
 # Header
