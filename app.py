@@ -116,6 +116,16 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# Optional name input (top)
+name = st.text_input(
+    "Your name (optional)",
+    placeholder="Enter your name to personalize the experience",
+    max_chars=50,
+)
+
+if name and name.strip():
+    st.markdown(f"<div style='text-align:center; color:#9ca3af; margin-bottom:0.6rem;'>Hello, {name} 👋</div>", unsafe_allow_html=True)
+
 st.markdown('<div class="panel">', unsafe_allow_html=True)
 message = st.text_area(
     "Message",
@@ -131,9 +141,15 @@ if st.button("🔍 Analyze Message", use_container_width=True):
         spam_confidence = probability[1] * 100
 
         if prediction == 1:
-            st.error("🚨 Spam Message")
+            if name and name.strip():
+                st.error(f"🚨 {name}, this looks like a Spam Message")
+            else:
+                st.error("🚨 Spam Message")
         else:
-            st.success("✅ Legitimate Message")
+            if name and name.strip():
+                st.success(f"✅ Good news, {name} — message looks legitimate")
+            else:
+                st.success("✅ Legitimate Message")
 
         st.progress(int(spam_confidence))
         st.metric("Spam Probability", f"{spam_confidence:.2f}%")
