@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.schema import SMSRequest
 from app.predict import predict_sms
-from sqlmodel import Session
+from sqlmodel import Session, select
 from app.database import engine
 from app.models import Prediction
 
@@ -29,3 +29,10 @@ def predict(data: SMSRequest):
         "prediction": "Spam" if prediction else "Ham",
         "probability": probability
     }
+@app.get("/history")
+def history():
+
+    with Session(engine) as session:
+        history = session.exec(select(Prediction)).all()
+
+    return history
