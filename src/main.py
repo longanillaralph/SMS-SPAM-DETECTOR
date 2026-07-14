@@ -52,11 +52,18 @@ def split_test_train_data(X,y):
     return X_train, X_test, y_train, y_test, X_test_text
 
 def evaluate_model(model, X_test, y_test):
-
     predictions = model.predict(X_test)
     probabilities = model.predict_proba(X_test)[:, 1]
 
-    return predictions, probabilities
+    metrics = {
+        "accuracy": accuracy_score(y_test, predictions),
+        "precision": precision_score(y_test, predictions),
+        "recall": recall_score(y_test, predictions),
+        "f1": f1_score(y_test, predictions),
+        "roc_auc": roc_auc_score(y_test, probabilities),
+    }
+
+    return predictions, probabilities, metrics
 
 def show_false_negatives(X_test, y_test, predictions):
     results = pd.DataFrame({
@@ -83,16 +90,9 @@ if __name__ == "__main__":
 
     predictions = model.predict(X_test)
 
-    predictions, probabilities = evaluate_model(model, X_test, y_test)
-
-    print("Accuracy:", accuracy_score(y_test, predictions))
-    print("Precision:", precision_score(y_test, predictions))
-    print("Recall:", recall_score(y_test, predictions))
-    print("F1:", f1_score(y_test, predictions))
-    print(confusion_matrix(y_test, predictions))
-    print(classification_report(y_test, predictions))
-    print("ROC AUC:", roc_auc_score(y_test, probabilities))
-
+    predictions, probabilities, metrics = evaluate_model(model, X_test, y_test)
+    print(metrics)
+        
     show_false_negatives(X_test, y_test, predictions)
 
     joblib.dump(model, "model\\spam_classifier.pkl")
