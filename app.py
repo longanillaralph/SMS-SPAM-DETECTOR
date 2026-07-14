@@ -1,7 +1,7 @@
 import streamlit as st
 import joblib
 from pathlib import Path
-from database import SessionLocal
+
 from models import Prediction
 
 # -------------------------------
