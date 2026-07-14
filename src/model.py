@@ -67,7 +67,7 @@ def evaluate_model(model, X_test, y_test):
 
 def show_false_negatives(X_test, y_test, predictions):
     results = pd.DataFrame({
-    "message": X_test_text,
+    "message": X_test,
     "actual": y_test,
     "predicted": predictions
 })

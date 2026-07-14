@@ -1,6 +1,9 @@
+from pathlib import Path
 import joblib
 
-model = joblib.load("model\\spam_classifier.pkl")
+BASE_DIR = Path(__file__).resolve().parents[1]
+MODEL_PATH = BASE_DIR / "Model" / "spam_classifier.pkl"
+model = joblib.load(MODEL_PATH)
 
 
 def predict_sms(message: str):
