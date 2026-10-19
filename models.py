@@ -1,10 +1,6 @@
-from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from datetime import datetime
-
-
-class Base(DeclarativeBase):
-    pass
+from database import Base
 
 
 class Prediction(Base):

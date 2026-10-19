@@ -79,3 +79,6 @@ uvicorn==0.51.0
 watchdog==6.0.0
 watchfiles==1.2.0
 websockets==16.1
+psycopg[binary]
+python-dotenv
+SQLAlchemy

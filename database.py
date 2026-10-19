@@ -1,31 +1,45 @@
+from sqlalchemy.orm import sessionmaker, DeclarativeBase
 import os
+import streamlit as st
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
 
-try:
-    # Running on Streamlit Cloud
-    import streamlit as st
+from sqlalchemy.engine import URL
 
-    DB_HOST = st.secrets["DB_HOST"]
-    DB_PORT = st.secrets["DB_PORT"]
-    DB_NAME = st.secrets["DB_NAME"]
-    DB_USER = st.secrets["DB_USER"]
-    DB_PASSWORD = st.secrets["DB_PASSWORD"]
+load_dotenv()
 
-except Exception:
-    # Running locally
-    load_dotenv()
+def get_db_config():
+    try:
+        # Streamlit Cloud secrets
+        if "DB_HOST" in st.secrets:
+            return {
+                "host": st.secrets["DB_HOST"],
+                "port": st.secrets["DB_PORT"],
+                "database": st.secrets["DB_NAME"],
+                "username": st.secrets["DB_USER"],
+                "password": st.secrets["DB_PASSWORD"],
+            }
+    except Exception:
+        pass
 
-    DB_HOST = os.getenv("DB_HOST")
-    DB_PORT = os.getenv("DB_PORT")
-    DB_NAME = os.getenv("DB_NAME")
-    DB_USER = os.getenv("DB_USER")
-    DB_PASSWORD = os.getenv("DB_PASSWORD")
+    # Local .env file
+    return {
+        "host": os.getenv("DB_HOST", "localhost"),
+        "port": int(os.getenv("DB_PORT", "5432")),
+        "database": os.getenv("DB_NAME", "sms_spam_detector"),
+        "username": os.getenv("DB_USER", "postgres"),
+        "password": os.getenv("DB_PASSWORD"),
+    }
 
-DATABASE_URL = (
-    f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}"
-    f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+db = get_db_config()
+
+DATABASE_URL = URL.create(
+    drivername="postgresql+psycopg",
+    username=db["username"],
+    password=db["password"],
+    host=db["host"],
+    port=int(db["port"]),
+    database=db["database"],
 )
 
 engine = create_engine(DATABASE_URL)
@@ -36,4 +50,5 @@ SessionLocal = sessionmaker(
     bind=engine
 )
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
