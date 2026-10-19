@@ -1,426 +1,330 @@
 # SMS Spam Detector
 
-A machine learning-powered SMS spam detection system built with scikit-learn and logistic regression. This project classifies SMS messages as spam or legitimate using a trained ML model with database integration for persistence and model management.
+A machine learning-powered web application that classifies SMS messages
+as **spam** or **ham (legitimate)**. The application uses a trained
+machine learning model, a Streamlit interface, and PostgreSQL to store
+prediction records.
 
 **Live Demo:** https://sms-spam-detector-by-neyaa.streamlit.app/
 
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Project Structure](#project-structure)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Model Details](#model-details)
-- [Database Setup](#database-setup)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [License](#license)
-
----
-
-## Overview
-
-This project implements an end-to-end spam detection pipeline:
-
-1. **Data Processing** – Clean and prepare SMS datasets for training
-2. **Model Training** – Train a logistic regression classifier with scikit-learn
-3. **Model Persistence** – Export and reload trained models
-4. **Database Integration** – Store messages, predictions, and model metadata in MySQL (Railway)
-5. **Web Interface** – Streamlit app for real-time predictions and model monitoring
-6. **Deployment** – Production-ready containerized setup
-
-The system demonstrates practical ML engineering skills including data pipeline design, model serialization, cloud database management, and model serving.
-
----
-
-## Project Structure
-
-```
-sms-spam-detector/
-├── .streamlit/              # Streamlit configuration
-├── devcontainer/            # Development container setup
-├── Data/                    # Dataset folder (raw SMS data)
-├── Model/                   # Trained model artifacts
-├── Notebooks/               # Jupyter notebooks for exploration and analysis
-├── src/                     # Source code modules
-├── __pycache__/            # Python cache
-├── app.py                  # Streamlit main application
-├── create_table.py         # Database schema initialization
-├── database.py             # Database connection and utilities
-├── models.py               # Model definitions and training logic
-├── requirements.txt        # Python dependencies
-├── test_connection.py      # Database connectivity tests
-└── README.md               # This file
-```
-
-### Key Files
-
-| File | Purpose |
-|------|---------|
-| `app.py` | Streamlit web interface for predictions and monitoring |
-| `models.py` | Model training, evaluation, and inference logic |
-| `database.py` | MySQL connection handling and CRUD operations |
-| `create_table.py` | Initialize database schema and tables |
-| `test_connection.py` | Verify database connectivity (debugging) |
-| `requirements.txt` | Project dependencies and versions |
-
----
-
 ## Features
 
-✅ **Logistic Regression Classifier** – Fast, interpretable spam detection  
-✅ **Real-time Predictions** – Classify SMS messages instantly  
-✅ **Model Persistence** – Save and load trained models for reproducibility  
-✅ **Database Storage** – MySQL backend for messages, predictions, and metrics  
-✅ **Streamlit Dashboard** – Interactive web interface for users and analysts  
-✅ **Dev Container** – Consistent development environment setup  
-✅ **Cloud Deployment** – Railway MySQL integration for scalability  
-✅ **Model Versioning** – Track multiple model versions and performance  
-
----
+-   **SMS classification:** Predict whether a message is spam or
+    legitimate.
+-   **Streamlit interface:** Enter an optional name and an SMS message
+    through a web interface.
+-   **Prediction persistence:** Save prediction records to a PostgreSQL
+    database.
+-   **SQLAlchemy integration:** Manage database connections and the
+    `predictions` table through SQLAlchemy.
+-   **Environment configuration:** Keep local database credentials in a
+    `.env` file rather than hard-coding them in source code.
+-   **Virtual environment support:** Isolate Python dependencies for
+    local development.
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|-----------|
-| **Language** | Python 3.x |
-| **ML Framework** | scikit-learn |
-| **Database** | MySQL (hosted on Railway) |
-| **Web Framework** | Streamlit |
-| **Containerization** | Docker (dev container) |
-| **Data Processing** | pandas, NumPy |
-| **Notebooks** | Jupyter |
+  -----------------------------------------------------------------------
+  Component                           Technology
+  ----------------------------------- -----------------------------------
+  Language                            Python
 
----
+  Machine learning                    scikit-learn
 
-## Installation
+  Web interface                       Streamlit
 
-### Prerequisites
+  Database                            PostgreSQL
 
-- Python 3.8+
-- pip or poetry
-- MySQL database (local or Railway)
-- Git
+  Database toolkit / ORM              SQLAlchemy
 
-### Local Setup
+  PostgreSQL driver                   Psycopg
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/longanillaraph/SMS-SPAM-DETECTOR.git
-   cd sms-spam-detector
-   ```
+  Environment variables               python-dotenv
 
-2. **Create a virtual environment** (recommended)
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+  Model persistence                   Pickle/joblib artifacts, depending
+                                      on the project files
+  -----------------------------------------------------------------------
 
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+## Project Structure
 
-4. **Set up environment variables**
-   Create a `.env` file in the project root with your Railway MySQL credentials:
-   ```
-   DB_HOST=your_railway_host
-   DB_USER=your_username
-   DB_PASSWORD=your_password
-   DB_NAME=spam_detector
-   DB_PORT=3306
-   ```
+The main files and folders include:
 
-5. **Initialize the database**
-   ```bash
-   python create_table.py
-   ```
-
-6. **Test database connection**
-   ```bash
-   python test_connection.py
-   ```
-
-### Dev Container Setup
-
-If using VS Code with the Remote Containers extension:
-
-1. Open the project in VS Code
-2. Click "Reopen in Container" when prompted
-3. The environment will be automatically configured with all dependencies
-
----
-
-## Usage
-
-### Running the Streamlit App
-
-Start the web interface for predictions:
-
-```bash
-streamlit run app.py
+``` text
+SMS-SPAM-DETECTOR/
+├── .streamlit/          # Streamlit configuration
+├── Data/                # Dataset files
+├── Model/               # Saved model artifacts
+├── Notebooks/           # Jupyter notebooks
+├── src/                 # Supporting source code
+├── app.py               # Streamlit application
+├── database.py          # PostgreSQL connection and SQLAlchemy setup
+├── models.py            # SQLAlchemy Prediction model definitions
+├── requirements.txt     # Python dependencies
+├── test_connection.py   # Database connection test
+├── .env                 # Local environment variables (create locally; do not commit)
+├── .gitignore           # Files Git should ignore
+└── README.md
 ```
 
-The app will open at `http://localhost:8501`. You can:
-- Enter an SMS message to check if it's spam
-- View prediction confidence scores
-- Monitor model performance metrics
-- Browse prediction history from the database
+Your local project may contain additional files. Keep the `venv/`
+virtual environment out of version control.
 
-### Training the Model
+## Requirements
 
-To retrain the model with new data:
+-   Python installed on your computer
+-   PostgreSQL installed and running, or access to a PostgreSQL server
+-   Git (optional, for cloning the repository)
 
-```bash
-python models.py  # Run the full training pipeline
+## Installation and Local Setup
+
+### 1. Clone the repository
+
+``` bash
+git clone https://github.com/longanillaraph/SMS-SPAM-DETECTOR.git
+cd SMS-SPAM-DETECTOR
 ```
 
-Or import and use in Python:
+If you already have the project on your computer, open its folder in VS
+Code and skip this step.
 
-```python
-from models import train_model, evaluate_model
-from database import load_spam_data
+### 2. Create and activate a virtual environment
 
-# Load data
-X_train, y_train = load_spam_data()
+On Windows PowerShell:
 
-# Train
-model = train_model(X_train, y_train)
-
-# Evaluate
-metrics = evaluate_model(model, X_test, y_test)
-print(metrics)
+``` powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 ```
 
-### Making Predictions
+On Windows Command Prompt:
 
-```python
-from models import predict_spam
-import joblib
-
-# Load the trained model
-model = joblib.load('Model/spam_model.pkl')
-
-# Predict
-message = "Win $1000! Click here now!"
-is_spam, confidence = predict_spam(model, message)
-print(f"Spam: {is_spam}, Confidence: {confidence:.2f}")
+``` bat
+venv\Scripts\activate
 ```
 
-### Database Operations
+On macOS or Linux:
 
-```python
-from database import insert_prediction, get_recent_predictions
-
-# Store a prediction
-insert_prediction(message="Test", is_spam=True, confidence=0.95)
-
-# Retrieve recent predictions
-predictions = get_recent_predictions(limit=10)
-for pred in predictions:
-    print(pred)
+``` bash
+python3 -m venv venv
+source venv/bin/activate
 ```
 
----
+When activation succeeds, the terminal normally shows `(venv)`.
 
-## Model Details
+### 3. Install dependencies
 
-### Algorithm
-
-**Logistic Regression** with scikit-learn's `LogisticRegression`:
-- **Solver:** lbfgs
-- **Max Iterations:** 1000
-- **Features:** TF-IDF vectorized text from SMS messages
-- **Training Size:** ~5,500 SMS messages (ham + spam)
-
-### Performance Metrics
-
-The model evaluation includes:
-- **Accuracy** – Overall correctness rate
-- **Precision** – True positive rate among predicted spam
-- **Recall** – True positive rate among actual spam
-- **F1 Score** – Harmonic mean of precision and recall
-- **Confusion Matrix** – TP, FP, TN, FN breakdown
-
-### Model Artifacts
-
-- `Model/spam_model.pkl` – Trained logistic regression classifier
-- `Model/tfidf_vectorizer.pkl` – TF-IDF transformer for text featurization
-
-### Retraining Pipeline
-
-To retrain with new data:
-
-1. Prepare labeled SMS dataset (message, label)
-2. Load and preprocess data
-3. Vectorize text using TF-IDF
-4. Train logistic regression
-5. Evaluate on test set
-6. Save model and vectorizer
-7. Deploy new model version
-
----
-
-## Database Setup
-
-### Schema
-
-The project uses MySQL with the following tables:
-
-**`messages` table:**
-```sql
-CREATE TABLE messages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    message TEXT NOT NULL,
-    is_spam BOOLEAN NOT NULL,
-    confidence FLOAT NOT NULL,
-    model_version VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+``` bash
+python -m pip install -r requirements.txt
 ```
 
-### Railway MySQL Setup
+The project uses PostgreSQL through Psycopg. If these packages are not
+already in `requirements.txt`, install them in the active virtual
+environment:
 
-1. Create a Railway project: https://railway.app
-2. Add MySQL plugin
-3. Get connection details from Railway dashboard
-4. Set environment variables in `.env`
-5. Run `python create_table.py` to initialize schema
+``` bash
+python -m pip install "psycopg[binary]" python-dotenv sqlalchemy
+```
 
-### Connection Testing
+### 4. Create the PostgreSQL database
 
-```bash
+In pgAdmin 4:
+
+1.  Connect to your PostgreSQL server.
+2.  Right-click **Databases** and choose **Create → Database**.
+3.  Use a database name such as `sms_spam_detector`.
+4.  Save the database.
+
+Use the actual database name you created in the configuration below.
+PostgreSQL database names can be case-sensitive when created with quoted
+uppercase letters.
+
+### 5. Configure environment variables
+
+Create a `.env` file in the project root, alongside `app.py` and
+`database.py`:
+
+``` dotenv
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=sms_spam_detector
+DB_USER=postgres
+DB_PASSWORD=replace_with_your_postgresql_password
+```
+
+Replace the example database name, username, and password with the
+values for your PostgreSQL setup. The port `5432` is PostgreSQL's
+default; use your server's configured port if different.
+
+**Security:** Do not commit `.env` or real database credentials to
+GitHub. Add the following to the root `.gitignore`:
+
+``` gitignore
+.env
+venv/
+__pycache__/
+```
+
+### 6. Test the database connection
+
+Run:
+
+``` bash
 python test_connection.py
 ```
 
-This will verify MySQL connectivity and display database info.
+A successful test should report that the PostgreSQL connection
+succeeded. If it fails, verify that PostgreSQL is running, the database
+exists, and the `.env` values are correct.
 
----
+### 7. Create the prediction table
 
-## Deployment
+The SQLAlchemy `Prediction` model defines a `predictions` table with
+fields for an ID, optional name, message, prediction, probability, and
+creation timestamp.
 
-### Streamlit Cloud Deployment
+If the project does not already have a database initialization script,
+create `init_db.py` in the project root:
 
-1. Push code to GitHub
-2. Go to https://share.streamlit.io
-3. Connect your GitHub repo
-4. Set environment variables in Streamlit Secrets
-5. Deploy!
+``` python
+from database import Base, engine
+from models import Prediction
 
-**Current deployment:** https://sms-spam-detector-by-neyaa.streamlit.app/
+Base.metadata.create_all(bind=engine)
 
-### Docker Deployment
-
-Build a container:
-
-```bash
-docker build -t sms-spam-detector .
-docker run -p 8501:8501 --env-file .env sms-spam-detector
+print("Database tables created successfully!")
 ```
 
-### Railway Deployment
+Run it once:
 
-1. Connect GitHub repo to Railway
-2. Add MySQL plugin
-3. Set environment variables
-4. Deploy the Streamlit app service
+``` bash
+python init_db.py
+```
 
----
+This creates tables defined on the imported `Base` if they do not
+already exist. Make sure `models.py` imports the same `Base` object from
+`database.py`; separate declarative bases will not share metadata. This
+command does not migrate or copy data from a previous MySQL database.
 
-## Contributing
+## Run the Application
 
-Contributions are welcome! To contribute:
+With the virtual environment activated and dependencies installed, run:
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/your-feature`)
-3. Make your changes and test thoroughly
-4. Commit with clear messages (`git commit -m "Add feature: ..."`)
-5. Push to your branch (`git push origin feature/your-feature`)
-6. Open a Pull Request
+``` bash
+python -m streamlit run app.py
+```
 
-### Development Guidelines
+Streamlit will provide a local URL, usually:
 
-- Use Python 3.8+ type hints where applicable
-- Follow PEP 8 style guidelines
-- Add docstrings to functions
-- Test database operations thoroughly before merging
-- Update `requirements.txt` if adding dependencies
+``` text
+http://localhost:8501
+```
 
----
+Enter an optional name, type or paste an SMS message, and click
+**Analyze Message** to view the prediction.
+
+## Database Model
+
+The `Prediction` SQLAlchemy model represents the `predictions` table:
+
+  -----------------------------------------------------------------------
+  Column                              Purpose
+  ----------------------------------- -----------------------------------
+  `id`                                Integer primary key
+
+  `name`                              Optional name associated with the
+                                      prediction
+
+  `message`                           SMS message submitted for
+                                      classification
+
+  `prediction`                        Predicted class, such as spam or
+                                      ham
+
+  `probability`                       Model probability/confidence value
+                                      stored by the application
+
+  `created_at`                        Timestamp assigned when the record
+                                      is created
+  -----------------------------------------------------------------------
+
+The application must explicitly save predictions through its database
+logic. Creating the table alone does not automatically save records.
+
+## Model Evaluation and Future Improvements
+
+Potential next steps include:
+
+-   Report precision, recall, F1-score, and a confusion matrix using a
+    held-out test set.
+-   Add a prediction-history view with pagination and filters.
+-   Add summary charts for saved predictions.
+-   Add automated tests for prediction and database logic.
+-   Use database migrations when the schema changes.
+-   Configure a hosted PostgreSQL database and deploy the updated
+    version.
+
+Only report evaluation metrics after measuring them on the actual
+trained model and test data.
 
 ## Troubleshooting
 
-### Database Connection Issues
+### `ModuleNotFoundError: No module named 'psycopg'`
 
-**Problem:** `OperationalError: (2003, "Can't connect to MySQL server")`
+Activate the project's virtual environment and install the driver:
 
-**Solution:**
-- Verify Railway MySQL credentials in `.env`
-- Check that Railway MySQL is running
-- Ensure whitelist IP in Railway settings
-- Run `python test_connection.py` for detailed error messages
-
-### Model Not Found
-
-**Problem:** `FileNotFoundError: [Errno 2] No such file or directory: 'Model/spam_model.pkl'`
-
-**Solution:**
-- Run `python models.py` to train and save the model
-- Check that the `Model/` directory exists
-
-### Streamlit Port Already in Use
-
-**Problem:** `Address already in use`
-
-**Solution:**
-```bash
-streamlit run app.py --server.port 8502
+``` bash
+python -m pip install "psycopg[binary]"
 ```
 
----
+### `database "..." does not exist`
 
-## Project Status
+Check `DB_NAME` in `.env` against the exact database name listed under
+**Servers → PostgreSQL → Databases** in pgAdmin. Refresh the Databases
+node if needed.
 
-- ✅ Core ML model (logistic regression)
-- ✅ Database integration (MySQL + Railway)
-- ✅ Streamlit web interface
-- ✅ Model persistence and versioning
-- 🔄 Advanced feature engineering (in progress)
-- 📋 Model interpretability dashboard (planned)
-- 📋 Batch prediction API (planned)
+### `invalid literal for int() with base 10: 'None'`
 
----
+The database URL is receiving an invalid port value. Set `DB_PORT` to
+the PostgreSQL server's numeric port (commonly `5432`) and verify that
+the environment variables are being loaded.
 
-## License
+### Password authentication failed
 
-This project is open source and available under the MIT License.
+Verify `DB_USER` and `DB_PASSWORD`. Do not share database passwords in
+issue reports or public repositories.
 
----
+### Streamlit port is already in use
+
+Try another port:
+
+``` bash
+python -m streamlit run app.py --server.port 8502
+```
+
+## Deployment
+
+The project has a published Streamlit demo:
+
+https://sms-spam-detector-by-neyaa.streamlit.app/
+
+For a deployment that uses PostgreSQL, configure the corresponding
+database secrets in the hosting platform and ensure the hosted database
+is reachable from the app. Do not use local `localhost` database
+settings for a cloud deployment unless the database actually runs in the
+same environment.
+
+After changing the database backend, verify the deployed app's secrets,
+dependencies, and database schema separately. A successful local
+connection does not automatically update the hosted application.
 
 ## Author
 
-**Eyan** | [GitHub](https://github.com/longanillaraph)
-
----
+**Eyan** --- [GitHub](https://github.com/longanillaraph)
 
 ## Acknowledgments
 
-- Dataset: UCI SMS Spam Collection
-- Framework: scikit-learn, Streamlit
-- Hosting: Railway, Streamlit Cloud
-- Inspired by practical ML engineering best practices
-
----
-
-## Questions or Issues?
-
-If you encounter any issues or have questions, please:
-1. Check the troubleshooting section above
-2. Review existing GitHub issues
-3. Open a new issue with detailed information
-
-Happy spam detecting! 🚀
+-   UCI SMS Spam Collection dataset (if used by the training pipeline)
+-   scikit-learn
+-   Streamlit
+-   PostgreSQL
+-   SQLAlchemy
