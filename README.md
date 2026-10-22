@@ -266,6 +266,42 @@ Potential next steps include:
 Only report evaluation metrics after measuring them on the actual
 trained model and test data.
 
+## Retraining the Model
+
+The training script is located at `src/model.py`. It automatically loads
+every `.csv` file in the `Data/` folder, combines the datasets, removes
+duplicate messages, trains a new model, and saves it to:
+
+``` text
+Model/spam_classifier.pkl
+```
+
+To add more training data, place another CSV file in `Data/` and run:
+
+``` powershell
+python src/model.py
+```
+
+Each CSV must contain these columns:
+
+``` csv
+v1,v2
+ham,Are we still meeting today?
+spam,Congratulations! You won a prize!
+```
+
+The `v1` column must contain `ham` or `spam`, and `v2` must contain the
+SMS message. The original dataset and all later datasets are combined on
+every training run. Duplicate messages are removed automatically.
+
+The script prints the number of datasets, message counts, class counts,
+and evaluation metrics. Before replacing an existing model, it creates a
+timestamped backup in the `Model/` folder.
+
+Keep only labeled training data in `Data/`. Use a separate test dataset
+when you want to measure performance on messages that were not used for
+training.
+
 ## Troubleshooting
 
 ### `ModuleNotFoundError: No module named 'psycopg'`
